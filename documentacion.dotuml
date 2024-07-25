@@ -1,0 +1,39 @@
+StateDiagram{
+
+
+
+state index_html{
+    state comp as       "Completar mensaje y autor"
+    state envi as       "Enviar mensaje \n socket.emit('emit'.."
+    comp -> envi
+
+    
+    state index_on as   "socket.on('mensajes'.."
+    state rend as       "render(mensajes)"
+    index_on -> rend
+   
+
+    state x as "x"
+    x -> comp "Quiero enviar \n un mensaje"
+
+    state y as "y"
+    y -> index_on "Actualización \n de mensajes"
+}
+
+state server_js{
+    state on as         "socket.on(nuevo mensaje)"
+    state acum as       "acumular en mensajes"
+    state emit as       "emitir mensajes"
+    on -> acum
+    acum -> emit
+
+    state y2 as "y"
+    emit -> y2 
+}
+
+initialstate -> index_html
+index_html -> server_js "Usuario envía \n nuevo mensaje"
+server_js -> index_html "Usuario recibe \n todos los \n mensajes"
+
+
+}

@@ -16,7 +16,7 @@ io.on('connection',(socket)=>{
     socket.emit('mensajes', mensajes)
 
     socket.on('nuevo-mensaje', (mensaje)=>{
-        
+        console.log("Se ha recibido un nuevo mensaje de "+mensaje.autor)
         mensajes.push(mensaje)
         
         io.sockets.emit('mensajes',mensajes)
@@ -28,7 +28,7 @@ app.get('/',(req, res)=>{
     res.send("Hola desde app!!!")
 })
 
-const PORT = 3000
+const PORT = process.env.PORT || 8080
 
 http.listen(PORT,()=>{console.log(`Escuchando en puerto${PORT}`)})
 .on('error',(error)=>{console.log(`Error en servidor. PORT = ${PORT}`)})

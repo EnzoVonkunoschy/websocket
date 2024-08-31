@@ -7,21 +7,22 @@
 
 </head>
 <body>
-    <h1>Mi App Chat Enzo</h1><span id="miId"></span>
+    <h1>Control Central</h1>
+    <h2> Enzo</h2>
 
     <div id="mensajes"></div>
 
     <form>
-        <input type="text" id="autor" placeholder="Tu nombre">
-        <input type="text" id="texto" placeholder="Cuéntanos algo...">
-        <input type="text" id="destinatario" placeholder="destinatario">
+        <input type="text" id="autor" placeholder="autor">
+        <input type="text" id="texto" placeholder="texto">
+        <input type="text" id="destinatario" placeholder="destinatario">        
         <input type="submit" value="Enviar">
     </form>
 
     
     <script src='/socket.io/socket.io.min.js'></script>
     <script src='js/main.js'></script>
-    <script src='js/main_cliente.js'></script>
+    <script src='js/main_central.js'></script>
 
 </body>
 </html>

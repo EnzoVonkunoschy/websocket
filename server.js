@@ -28,6 +28,10 @@ app.get('/',(req, res)=>{
     res.send("Hola desde app!!!")
 })
 
+app.get('/central',(req,res)=>{
+    res.sendFile('central.html',{ root: __dirname + '/public' })
+})
+
 const PORT = process.env.PORT || 8080
 
 http.listen(PORT,()=>{console.log(`Escuchando en puerto${PORT}`)})

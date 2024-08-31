@@ -1,7 +1,10 @@
+
+
 const socket = io.connect()
 
 socket.on('mensajes',(mensajes)=>{
-    render(mensajes)
+    console.log('Mensajes recibidos.')
+    render(misMensajes(mensajes))
 })
 
 function render(mensajes){
@@ -9,6 +12,7 @@ function render(mensajes){
         <div>
             <b>${mensaje.autor}:</b>
             <i>${mensaje.texto}</i>
+            <span>${mensaje.destinatario}</span>
         </div>`
     }).join(' ')
 
@@ -21,8 +25,11 @@ function addMensaje(e){
     e.preventDefault()
 
     const mensaje = {
-        autor: document.getElementById('autor').value,
+        //autor: document.getElementById('autor').value,
+        autor: autorLocal,
+        //autor: "Enzo",
         texto: document.getElementById('texto').value,
+        destinatario: getDestinatario(),
     }
 
     socket.emit('nuevo-mensaje', mensaje)

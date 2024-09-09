@@ -8,15 +8,19 @@ socket.on('mensajes',(mensajes)=>{
 })
 
 function render(mensajes){
-    const html = mensajes.map((mensaje)=>{return `
-        <div>
-            <b>${mensaje.autor}:</b>
-            <i>${mensaje.texto}</i>
-            <span>${mensaje.destinatario}</span>
-        </div>`
-    }).join(' ')
+    if(autorLocal != 'Farmacia'){
+        const html = mensajes.map((mensaje)=>{return `
+            <div>
+                <b>${mensaje.autor}:</b>
+                <i>${mensaje.texto}</i>
+                <span>${mensaje.destinatario}</span>
+            </div>`
+        }).join(' ')
 
-    document.getElementById('mensajes').innerHTML = html
+        document.getElementById('mensajes').innerHTML = html
+    }else{
+        procesarMensajes(mensajes)
+    }
 }
 
 document.querySelector('form').addEventListener('submit',addMensaje)

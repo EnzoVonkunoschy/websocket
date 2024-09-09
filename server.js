@@ -2,6 +2,7 @@ const express = require('express')
 
 const app = express()
 const http = require('http').Server(app)
+const multer = require('multer')
 
 //npm install express socket.io http
 const io = require('socket.io')(http)
@@ -18,7 +19,7 @@ io.on('connection',(socket)=>{
     socket.on('nuevo-mensaje', (mensaje)=>{
         console.log("Se ha recibido un nuevo mensaje de "+mensaje.autor)
         mensajes.push(mensaje)
-        
+        console.log(mensajes)
         io.sockets.emit('mensajes',mensajes)
     })
 })
@@ -26,6 +27,31 @@ io.on('connection',(socket)=>{
 
 app.get('/',(req, res)=>{
     res.send("Hola desde app!!!")
+})
+
+
+
+// multer --------------------------------------
+    const storage = multer.diskStorage({
+        destination: function(req, file, cb){
+            cb(null, 'public/images')
+        },
+        filename: function(req, file, cb){
+            cb(null, `${Date.now()}-${file.originalname}`)
+        }
+    })
+    const upload = multer({storage})
+// producto ------------------------------------
+
+
+app.post('/captura',upload.single('file'),(req, res)=>{
+
+    res.send('Respuesta desde captura')
+    const mensaje = {autor: req.body.autor, destinatario: 'Farmacia', texto: 'Captura', imagen: req.file.filename}
+    
+    mensajes.push(mensaje)
+    
+    io.sockets.emit('mensajes',mensajes)
 })
 
 app.get('/central',(req,res)=>{

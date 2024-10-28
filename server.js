@@ -11,7 +11,31 @@ console.log(path.join(__dirname,'public'))
 //npm install express socket.io http
 const io = require('socket.io')(http)
 
+// Ruta --------------------------------------
+var estaUrl = path.join(__dirname);
+var _url = "";
+console.log(estaUrl)
+
+let produccion = false
+if(estaUrl[0] == "C" && estaUrl[1] == ":"){
+    produccion = false;
+}else{
+    produccion = true;
+}
+
+if(produccion){
+    _url = "https://"+process.env.RAILWAY_PUBLIC_DOMAIN+"/";
+}else{
+    _url = "http://localhost:8080/";
+}
+console.log(produccion)
+
 app.use(express.static('public'))
+// Motor de plantillas ------------------------
+app.set('view engine', 'ejs');
+
+
+
 
 const mensajes = [{autor: 'Juan', texto: 'Hola que tal...'}]
 
@@ -30,7 +54,8 @@ io.on('connection',(socket)=>{
 
 
 app.get('/',(req, res)=>{
-    res.send("Hola desde app!!!")
+    //res.send("Hola desde app!!!")
+    res.render('index.ejs',{url: _url})
 })
 
 

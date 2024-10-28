@@ -69,6 +69,7 @@ app.get('/',(req, res)=>{
             cb(null, `${Date.now()}-${file.originalname}`)
         }
     })
+    console.log(JSON.stringify(storage))
     const upload = multer({storage})
 // producto ------------------------------------
 

@@ -1,0 +1,8 @@
+StateDiagram{
+    state eliminarRepetidos
+    state procesarMensajes
+    state getDestinatario
+    state misMensajes
+
+    
+}

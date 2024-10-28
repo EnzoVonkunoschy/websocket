@@ -1,3 +1,5 @@
+
+
 var autorLocal = 'Farmacia'
 
 function misMensajes(arg){
@@ -12,68 +14,61 @@ function getDestinatario(){
 }
 
 function procesarMensajes(data){
+    console.log("data")
     console.log(data)
-    document.getElementById('mensajes2').innerHTML = "<pre>"+JSON.stringify(data)+"</pre>"
+
+    /* contruyo una tabla con data */
     let str = ''
+    for(let i=0 ; i<data.length ; i++){
+        str = str + `<tr><td>${data[i].autor}</td><td>${data[i].texto}</td><td>${data[i].destinatario}</td></tr>`
+    }
+
+    str =  `<table border> ${str} </table>`
+    //document.getElementById('mensajes2').innerHTML = str
+
+    /* hago una lista con todos los clientes */
     let clientes = []
     for(var i=0 ; i<data.length ; i++){
-        str += `<p>${data[i].texto}</p>`
         data[i].autor=='Farmacia'?clientes.push(data[i].destinatario):clientes.push(data[i].autor)
     }
+    console.table("clientes") 
+    console.table(clientes) 
 
-    console.table(clientes) // id de clientes no repetidos
+    let clientes_ = eliminarRepetidos(clientes)
+    //let clientes_ = clientes
+    console.table(clientes_)
 
-    document.getElementById('mensajes2').innerHTML = str
-
-
-    let flag = false
-    do{
-        pf = clientes.length - 1
-        pi = pf - 1
-        flag = false
-        do{
-            if(clientes[pi] == clientes[pf]){
-                clientes.splice(pf,1)
-                pf = pi
-                flag = true
-            }
-            pi = pi - 1
-        }while(0 <= pi)
-    }while(flag)
-
+    /* Construyo la tabla ordenada por clientes */
     str = ''
-    for(var j=0 ; j<clientes.length ; j++){
-        str += "<hr>"
-        str += clientes[j]+"<br>"
-        for(var i=0 ; i<data.length ; i++){
-            if(data[i].autor == clientes[j] || data[i].destinatario == clientes[j]){
-                str += `<p>${data[i].texto}</p>`
-            }
-        }        
-    }
-    
-
-
-    document.getElementById('mensajes3').innerHTML = str
-
+    for(let j=0 ; j<clientes_.length ; j++){
         
+        /* contruyo una tabla con data */
+        let str2 = ''
+        for(let i=0 ; i<data.length ; i++){
+            if(data[i].autor == clientes_[j] || data[i].destinatario == clientes_[j]){
+                str2 = str2 + `<tr><td>${data[i].autor}</td><td>${data[i].texto}</td><td>${data[i].destinatario}</td></tr>`
+            }
+        }
+        //str2 += "<tr><td><input type='text' id='miId'></td></tr>"
+        str2 += `<tr><td><input type='text' id='txt${clientes_[j]}'><button id='${clientes_[j]}' carga='hola' onclick='enviar2(this)'>Enviar</button></td></tr>`
+        
+          str = str + `<table border> ${str2} </table><hr>`
+    }
+      
+    document.getElementById('mensajes3').innerHTML = str  
+}
+
+function enviar2(arg){
+    let cli = (arg.getAttribute('id'));
+
+    document.getElementById('autor').value='Farmacia'
+    document.getElementById('texto').value=  document.getElementById('txt'+cli).value//document.getElementById('otroTexto')
+    document.getElementById('destinatario').value= cli
+    document.getElementById('enviarx').click()
+
 }
 
 function eliminarRepetidos(vector){
-    let flag = false
-    do{
-        let pf = vector.length - 1
-        let pi = pf - 1
-        flag = false
-        do{
-            if(vector[pf] == vector[pi]){
-                vector.splice(pf,1)
-                pf = pi
-                flag = true
-            }
-            pi = pi - 1
-    
-        }while(0 <= pi)
-    }while(flag)
-    return vector
+    return Array.from(new Set(vector))
+
 }

@@ -4,6 +4,10 @@ const app = express()
 const http = require('http').Server(app)
 const multer = require('multer')
 
+const path = require('path')
+console.log(__dirname)
+console.log(path.join(__dirname,'public','rata'))
+
 //npm install express socket.io http
 const io = require('socket.io')(http)
 
@@ -47,7 +51,10 @@ app.get('/',(req, res)=>{
 app.post('/captura',upload.single('file'),(req, res)=>{
 
     res.send('Respuesta desde captura')
-    const mensaje = {autor: req.body.autor, destinatario: 'Farmacia', texto: 'Captura', imagen: req.file.filename}
+    //const mensaje = {autor: req.body.autor, destinatario: 'Farmacia', texto: 'Captura', imagen: req.file.filename}
+    //const mensaje = {autor: req.body.autor, destinatario: 'Farmacia', texto: '<button>Ok</button>', imagen: req.file.filename}
+    //const mensaje = {autor: req.body.autor, destinatario: 'Farmacia', texto: "<a href='http://localhost:8080/images/1729675790868-73974847658526990-captura.png' target='new'>Captura</a>"}
+    const mensaje = {autor: req.body.autor, destinatario: 'Farmacia', texto: "<a href='http://localhost:8080/images/"+req.file.filename+"' target='new'>Captura</a>"}
     
     mensajes.push(mensaje)
     

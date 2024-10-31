@@ -1,18 +1,26 @@
+
+
 const socket = io.connect()
 
 socket.on('mensajes',(mensajes)=>{
-    render(mensajes)
+    console.log('Mensajes recibidos.')
+    render(misMensajes(mensajes))
 })
 
 function render(mensajes){
-    const html = mensajes.map((mensaje)=>{return `
-        <div>
-            <b>${mensaje.autor}:</b>
-            <i>${mensaje.texto}</i>
-        </div>`
-    }).join(' ')
+    if(autorLocal != 'Farmacia'){
+        const html = mensajes.map((mensaje)=>{return `
+            <div>
+                <b>${mensaje.autor}:</b>
+                <i>${mensaje.texto}</i>
+                <span>${mensaje.destinatario}</span>
+            </div>`
+        }).join(' ')
 
-    document.getElementById('mensajes').innerHTML = html
+        document.getElementById('mensajes').innerHTML = html
+    }else{
+        procesarMensajes(mensajes)
+    }
 }
 
 document.querySelector('form').addEventListener('submit',addMensaje)
@@ -21,8 +29,11 @@ function addMensaje(e){
     e.preventDefault()
 
     const mensaje = {
-        autor: document.getElementById('autor').value,
+        //autor: document.getElementById('autor').value,
+        autor: autorLocal,
+        //autor: "Enzo",
         texto: document.getElementById('texto').value,
+        destinatario: getDestinatario(),
     }
 
     socket.emit('nuevo-mensaje', mensaje)

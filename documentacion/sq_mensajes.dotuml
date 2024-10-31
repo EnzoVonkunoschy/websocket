@@ -1,0 +1,13 @@
+SequenceDiagram{
+lifeline index_html
+lifeline main_js
+lifeline main_central_js
+
+index_html --> main_js "on.mensajes"
+main_js --> main_central_js "misMensajes(arg)"
+main_js <-r- main_central_js "[{Mensaje}]"
+main_js --> main_js "render([{Mensjae}])"
+index_html <-r- main_js "<tag>"
+main_js --> main_central_js "procesarMensajes([{Mensaje}])"
+
+}

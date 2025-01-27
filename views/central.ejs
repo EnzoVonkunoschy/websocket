@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+<body>
+    <h1>Control Central</h1>
+    <h2> Enzo</h2>
+    <!--
+    <div id="mensajes"></div>-->
+
+    <form>
+        <input type="text" id="autor" placeholder="autor">
+        <input type="textarea" id="texto" placeholder="texto">
+        <input type="text" id="destinatario" placeholder="destinatario">        
+        <input type="submit" id="enviarx" value="Enviar">
+    </form>
+
+    <div id="mensajes2"></div>
+    <hr>
+    <div id="mensajes3"></div>
+
+    
+    <script src='/socket.io/socket.io.min.js'></script>
+    <script src='js/main.js'></script>
+    <script>var url= '<%=url%>'</script>
+    <script src='js/main_central.js'></script>
+
+</body>
+</html>

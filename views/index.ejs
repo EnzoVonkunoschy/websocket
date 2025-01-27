@@ -8,48 +8,105 @@
 </head>
 <body>
     <h1>Mi App Chat Enzo</h1><span id="miId"></span>
-
+    <img src="corporativo/logo.png" alt="logo">
     <div id="mensajes"></div>
 
     <form>
-        <input type="text" id="autor" placeholder="Tu nombre">
+        <input type="text" id="autor" placeholder="Tu nombre" hidden>
         <!-- 
         <input type="text" id="texto" placeholder="Cuéntanos algo...">-->
         <textarea id="texto" placeholder="Escribe aquí..." rows="4" cols="30"></textarea>
-        <input type="text" id="destinatario" placeholder="destinatario">
+        <input type="text" id="destinatario" placeholder="destinatario" hidden>
         <input type="submit" value="Enviar">
     </form>
 
     <video id="video" width="320" height="240" autoplay></video>
-    <button id="snap">Tomar Foto</button>
+    <div id="div_snap" ><button id="snap">Tomar Foto</button></div>
     <canvas id="canvas" width="320" height="240"></canvas>
 
     <script>
-        // Acceder a la cámara
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(function(stream) {
-                var video = document.getElementById('video');
-                video.srcObject = stream;
-                video.play();
-            })
-            .catch(function(error) {
-                console.error("Error al acceder a la cámara: ", error);
+        //mi tag script
+        let idCamaras = []
+        navigator.mediaDevices.enumerateDevices()
+        .then(function(devices) {
+            console.log("devices.length")
+            console.log(devices.length)
+            console.log(Object.keys(devices[0]))
+            devices.forEach(function(device) {
+                console.log(device.label)
+                if (device.kind === 'videoinput') {
+                    console.log(device.label + " id = " + device.deviceId);
+                    idCamaras.push(device.deviceId)
+                }
             });
-    
-        // Capturar la foto
+
+            console.log("idCamaras")
+            console.log(idCamaras)
+            console.log(idCamaras.length)
+            let str = ""
+            for(let i=0 ; i<idCamaras.length ; i++){
+                str += `<button onclick="iniciarCamara(${i})">Cámara ${i+1}</button>`
+            }
+            document.getElementById('camaras').innerHTML = str;
+        })
+        .catch(function(err) {
+            console.error(err.name + ": " + err.message);
+        });
+    </script>
+   <div id="camaras"></div>
+    <script>
+        var stream;
+        function iniciarCamara(idCam){
+            document.getElementById('snap').style.display = "block"
+            navigator.mediaDevices.getUserMedia({ video: {deviceId: { exact: idCamaras[idCam] }} })
+                .then(function(stream1) {
+                    var video = document.getElementById('video');
+                    stream = stream1  // ft 1
+                    video.style.display = "block"; // req 27-01
+                    video.srcObject = stream1;
+                    video.play();
+                     //miStream = stream;  ft 1
+                })
+                .catch(function(error) {
+                    console.error("Error al acceder a la cámara: ", error);
+                });
+ 
+        }
+
+        // Deteniendo la transmisión
+        function detenerTransmision() {
+            if (stream) {
+                let tracks = stream.getTracks();
+                tracks.forEach(function(track) {
+                track.stop();
+                });
+                stream = null;
+            }
+            // Selecciona el elemento <video> por su id
+            var videoElement = document.getElementById("video");
+
+            // Cambia el estilo display a 'none' para ocultar el elemento
+            videoElement.style.display = "none";
+                  canvas.style.display = "none";
+            document.getElementById('snap').style.display = "none";  // req 27-01
+        }
+
         document.getElementById('snap').addEventListener('click', function() {
             var canvas = document.getElementById('canvas');
             var context = canvas.getContext('2d');
             var video = document.getElementById('video');
+            
             context.drawImage(video, 0, 0, 320, 240);
     
             // Convertir la imagen a un archivo Blob y enviarla al servidor
+            
             canvas.toBlob(function(blob) {
                 var formData = new FormData();
                 formData.append('file', blob, autorLocal+'-captura.png');
                 formData.append('autor', autorLocal); 
-    
-                //fetch('http://localhost:8080/captura', {
+
+                detenerTransmision()  
+
                 fetch('<%=url%>captura', {
                     method: 'POST',
                     body: formData
@@ -63,6 +120,7 @@
                 });
             }, 'image/png');
         });
+        
     </script>
     
     <script src='/socket.io/socket.io.min.js'></script>

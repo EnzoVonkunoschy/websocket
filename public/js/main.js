@@ -13,7 +13,7 @@ function render(mensajes){
             <div>
                 <b>${mensaje.autor}:</b>
                 <i>${mensaje.texto}</i>
-                <span>${mensaje.destinatario}</span>
+                <!--span>${mensaje.destinatario}</span-->
             </div>`
         }).join(' ')
 
@@ -35,6 +35,7 @@ function addMensaje(e){
         texto: document.getElementById('texto').value,
         destinatario: getDestinatario(),
     }
-
+    //11-17 borrar campo texto cliente
+    document.getElementById('texto').value = "";
     socket.emit('nuevo-mensaje', mensaje)
 }

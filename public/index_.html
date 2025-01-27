@@ -25,6 +25,21 @@
     <canvas id="canvas" width="320" height="240"></canvas>
 
     <script>
+        //mi tag script
+        navigator.mediaDevices.enumerateDevices()
+        .then(function(devices) {
+            devices.forEach(function(device) {
+                if (device.kind === 'videoinput') {
+                    console.log(device.label + " id = " + device.deviceId);
+                }
+            });
+        })
+        .catch(function(err) {
+            console.error(err.name + ": " + err.message);
+        });
+    </script>
+
+    <script>
         // Acceder a la cámara
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(function(stream) {

@@ -50,12 +50,25 @@ function procesarMensajes(data){
             }
         }
         //str2 += "<tr><td><input type='text' id='miId'></td></tr>"
-        str2 += `<tr><td><input type='text' id='txt${clientes_[j]}'><button id='${clientes_[j]}' carga='hola' onclick='enviar2(this)'>Enviar</button></td></tr>`
+        str2 += `<tr><td><input type='text' id='txt${clientes_[j]}'><button id='${clientes_[j]}' carga='hola' onclick='enviar2(this)'>Enviar</button></td>
+        <td><button id='eliminarChat_${clientes_[j]}' carga='hola' onclick='eliminarChat(this)'>Eliminar Chat</button></td></tr>`
         
           str = str + `<table border> ${str2} </table><hr>`
     }
       
     document.getElementById('mensajes3').innerHTML = str  
+}
+
+function eliminarChat(arg){
+
+    let autor = arg.getAttribute('id').split('_')[1]
+    console.log(autor);
+
+    document.getElementById('autor').value='Farmacia'
+    document.getElementById('texto').value=  '__borrar__'
+    document.getElementById('destinatario').value= autor
+    document.getElementById('enviarx').click()
+
 }
 
 function enviar2(arg){

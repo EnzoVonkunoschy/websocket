@@ -2,7 +2,7 @@ const fs = require('fs');
 //const { folderPath } = require('./test'); ojo!
 
 function borrarArchivos(autor){
-    console.log("delMensajes()---------------------")
+    //console.log("delMensajes()---------------------")
 
     //Leo los archivos de la carpeta que contiene las imágenes
     fs.readdir(folderPath, (err, files) => {
@@ -19,7 +19,7 @@ function borrarArchivos(autor){
                     
                     fs.unlink(folderPath + "\\" + files[i], (err)=>{
                         if(err){
-                            console.log(err.message)
+                            //console.log(err.message)
                         }
                     })
                 }
@@ -45,7 +45,7 @@ function deleteFilesInFolder(folderPath) {
                 if (err) {
                     console.error(`Error deleting file: ${err}`);
                 } else {
-                    console.log(`Deleted file: ${filePath}`);
+                    //console.log(`Deleted file: ${filePath}`);
                 }
             });
         });

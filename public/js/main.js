@@ -3,19 +3,22 @@
 const socket = io.connect()
 
 socket.on('mensajes',(mensajes)=>{
-    console.log('Mensajes recibidos.')
+    //console.log('Mensajes recibidos.')
     render(misMensajes(mensajes))
 })
 
 function render(mensajes){
     if(autorLocal != 'Farmacia'){
-        const html = mensajes.map((mensaje)=>{return `
-            <div>
-                <b>${mensaje.autor}:</b>
-                <i>${mensaje.texto}</i>
-                <!--span>${mensaje.destinatario}</span-->
-            </div>`
-        }).join(' ')
+
+        let html = ""
+        for(let i=0 ; i<mensajes.length ; i++){
+            if(mensajes[i].autor == 'Farmacia'){
+                html +=  `<div style="background-color: lightgreen"><span>${mensajes[i].texto}</span></div>`
+            }else{
+                html += `<div style="text-align: right;"><span>${mensajes[i].texto}</span></div>`
+            }
+
+        }
 
         document.getElementById('mensajes').innerHTML = html
     }else{
@@ -34,6 +37,7 @@ function addMensaje(e){
         //autor: "Enzo",
         texto: document.getElementById('texto').value,
         destinatario: getDestinatario(),
+        token: document.getElementById('token').value
     }
     //11-17 borrar campo texto cliente
     document.getElementById('texto').value = "";

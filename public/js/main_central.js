@@ -3,8 +3,8 @@
 var autorLocal = 'Farmacia'
 
 function misMensajes(arg){
-    console.log("arg")
-    console.log(arg)
+    //console.log("arg")
+    //console.log(arg)
     const misM = arg.filter(x=>x.autor != 'Farmacia')
     return arg
 }
@@ -14,8 +14,8 @@ function getDestinatario(){
 }
 
 function procesarMensajes(data){
-    console.log("data")
-    console.log(data)
+    //console.log("data")
+    //console.log(data)
 
     /* contruyo una tabla con data */
     let str = ''
@@ -46,14 +46,28 @@ function procesarMensajes(data){
         let str2 = ''
         for(let i=0 ; i<data.length ; i++){
             if(data[i].autor == clientes_[j] || data[i].destinatario == clientes_[j]){
-                str2 = str2 + `<tr><td>${data[i].autor}</td><td>${data[i].texto}</td><td>${data[i].destinatario}</td></tr>`
+                if(data[i].autor == 'Farmacia'){
+                    str2 +=  `<div style="background-color: lightgreen"><span>${data[i].texto}</span></div>`
+                }else{
+                    str2 += `<div style="text-align: right;"><span>${data[i].texto}</span></div>`
+                }
             }
         }
-        //str2 += "<tr><td><input type='text' id='miId'></td></tr>"
-        str2 += `<tr><td><input type='text' id='txt${clientes_[j]}'><button id='${clientes_[j]}' carga='hola' onclick='enviar2(this)'>Enviar</button></td>
-        <td><button id='eliminarChat_${clientes_[j]}' carga='hola' onclick='eliminarChat(this)'>Eliminar Chat</button></td></tr>`
         
-          str = str + `<table border> ${str2} </table><hr>`
+        str2 += `
+        <br>
+            <p style='display: flex; justify-content: center;'>
+                <input type='text' id='txt${clientes_[j]}' style= 'width: 95%;border-radius: 10px; font-size: 1.5em; margin: 0 auto'>
+            </p>
+        <br>
+        <p  style="display: flex; justify-content: space-between;">
+        <button id='eliminarChat_${clientes_[j]}' onclick='eliminarChat(this)' style='width: 45%;background-color: red; color: white;' >Eliminar Chat</button>
+        <button id='${clientes_[j]}'              onclick='enviar2(this)'      style='width: 45%;'>Enviar</button>
+        </p>`
+        
+          //str = str + `<div style='border: 1px;'>${str2}</div> `
+          str = str + `<div style="border: 1px solid darkgrey; border-radius: 10px;">${str2}</div><br>
+ `
     }
       
     document.getElementById('mensajes3').innerHTML = str  
@@ -61,17 +75,22 @@ function procesarMensajes(data){
 
 function eliminarChat(arg){
 
-    let autor = arg.getAttribute('id').split('_')[1]
-    console.log(autor);
+    if (confirm("¿Estás seguro de que deseas continuar?")) {
+        let autor = arg.getAttribute('id').split('_')[1]
+        //console.log(autor);
+    
+        document.getElementById('autor').value='Farmacia'
+        document.getElementById('texto').value=  '__borrar__'
+        document.getElementById('destinatario').value= autor
+        document.getElementById('token').value = token
+        document.getElementById('enviarx').click()
+    } else {
 
-    document.getElementById('autor').value='Farmacia'
-    document.getElementById('texto').value=  '__borrar__'
-    document.getElementById('destinatario').value= autor
-    document.getElementById('enviarx').click()
-
+    }
 }
 
 function enviar2(arg){
+
     let cli = (arg.getAttribute('id'));
 
     document.getElementById('autor').value='Farmacia'

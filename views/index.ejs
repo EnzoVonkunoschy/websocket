@@ -45,6 +45,7 @@
     navigator.mediaDevices.enumerateDevices()
         .then(function(devices) {
             devices.forEach(function(device) {
+                console.log(device)
                 if (device.kind === 'videoinput') {
                     idCamaras.push(device.deviceId)
                 }
@@ -125,18 +126,27 @@
     var canvas;
 
     function snap(){
-        ocultarBotones()
-             canvas = document.getElementById('canvas');
-        var context = canvas.getContext('2d');
-        var   video = document.getElementById('video');
-        
-        context.drawImage(video, 0, 0, 320, 240);
-        
-        document.getElementById('enviar_snap').style.display = "block"
-        document.getElementById('cancelar_snap').style.display = "block"
+    ocultarBotones();
+    canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    var video = document.getElementById('video');
+    
+    // Obtener las dimensiones del vídeo
+    var videoWidth = video.videoWidth;
+    var videoHeight = video.videoHeight;
+    
+    // Ajustar las dimensiones del canvas
+    canvas.width = videoWidth;
+    canvas.height = videoHeight;
+    
+    // Dibujar la imagen en el canvas manteniendo la relación de aspecto
+    context.drawImage(video, 0, 0, videoWidth, videoHeight);
+    
+    document.getElementById('enviar_snap').style.display = "block";
+    document.getElementById('cancelar_snap').style.display = "block";
+    document.getElementById('canvas').style.display = "block";
+}
 
-        document.getElementById('canvas').style.display = "block"
-    }
 
     function cancelar_snap(){
         iniciarCamara()

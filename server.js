@@ -1,10 +1,15 @@
 const express = require('express')
 
+const Modelo = require('./modelo.js')
+
 const app = express()
 const http = require('http').Server(app)
 const multer = require('multer')
 
 const path = require('path')
+
+const imagesPath = path.join(__dirname, 'public/images');
+
 console.log(__dirname)
 console.log(path.join(__dirname,'public'))
 
@@ -34,28 +39,37 @@ app.use(express.static('public'))
 // Motor de plantillas ------------------------
 app.set('view engine', 'ejs');
 
+// body.json ------------------------------
+app.use(express.urlencoded({extended: true}))
+app.use(express.json())
 
-
-
-const mensajes = [{autor: 'Juan', texto: 'Hola que tal...'}]
+//const mensajes = [{autor: 'Juan', texto: 'Hola que tal...'}]
+var mensajes = []
+Modelo.deleteFilesInFolder(imagesPath);
 
 io.on('connection',(socket)=>{
-    console.log("Un cliente se ha conectado")
+    //console.log("Un cliente se ha conectado")
 
     socket.emit('mensajes', mensajes)
 
     socket.on('nuevo-mensaje', (mensaje)=>{
-        console.log("Se ha recibido un nuevo mensaje de "+mensaje.autor)
-        mensajes.push(mensaje)
-        console.log(mensajes)
-        io.sockets.emit('mensajes',mensajes)
+        //console.log("Se ha recibido un nuevo mensaje de "+mensaje.autor+" "+mensaje.token)
+        if(mensaje.token == "1qasw23edfr4"){
+            mensajes.push(mensaje)
+            if(mensaje.texto == '__borrar__' && mensaje.autor == 'Farmacia'){
+                //console.log("Llegó borrar.")
+                mensajes = mensajes.filter(x=>!(x.autor == mensaje.destinatario || x.destinatario == mensaje.destinatario) )
+                Modelo.borrarArchivos(mensaje.destinatario)
+            }
+            io.sockets.emit('mensajes',mensajes)
+        }
     })
 })
 
 
 app.get('/',(req, res)=>{
     //res.send("Hola desde app!!!")
-    res.render('index.ejs',{url: _url})
+    res.render('index.ejs',{url: _url,token: "1qasw23edfr4"})
 })
 
 
@@ -69,18 +83,18 @@ app.get('/',(req, res)=>{
             cb(null, `${Date.now()}-${file.originalname}`)
         }
     })
-    console.log(JSON.stringify(storage))
+    //console.log(JSON.stringify(storage))
     const upload = multer({storage})
 // producto ------------------------------------
 
 
 app.post('/captura',upload.single('file'),(req, res)=>{
-    console.log("Llegó una captura: "+JSON.stringify(req.file))
+    //console.log("Llegó una captura: "+JSON.stringify(req.file))
     res.send('Respuesta desde captura')
     //const mensaje = {autor: req.body.autor, destinatario: 'Farmacia', texto: 'Captura', imagen: req.file.filename}
     //const mensaje = {autor: req.body.autor, destinatario: 'Farmacia', texto: '<button>Ok</button>', imagen: req.file.filename}
     //const mensaje = {autor: req.body.autor, destinatario: 'Farmacia', texto: "<a href='http://localhost:8080/images/1729675790868-73974847658526990-captura.png' target='new'>Captura</a>"}
-    const mensaje = {autor: req.body.autor, destinatario: 'Farmacia', texto: "<a href='"+_url+"images/"+req.file.filename+"' target='new'>Captura</a>"}
+    const mensaje = {autor: req.body.autor, destinatario: 'Farmacia', texto: "<a href='"+_url+"images/"+req.file.filename+"' target='new'>Captura</a>",imagen: req.file.filename}
     
     
     mensajes.push(mensaje)
@@ -88,8 +102,21 @@ app.post('/captura',upload.single('file'),(req, res)=>{
     io.sockets.emit('mensajes',mensajes)
 })
 
-app.get('/central',(req,res)=>{
-    res.sendFile('central.html',{ root: __dirname + '/public' })
+
+/* */
+app.get('/x',(req,res)=>{
+    
+    res.render('login.ejs',{url: _url})
+})
+
+app.post('/central', (req, res)=>{
+    //console.log(req.body)
+    if(req.body.user == "santa" && req.body.pass == "rita"){
+        res.render('central.ejs',{url: _url, token: "1qasw23edfr4"})
+    }else{
+        res.render('login.ejs',{url: _url})
+    }
+    
 })
 
 const PORT = process.env.PORT || 8080

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmacia Santa Rita</title>
+    <link rel="stylesheet" href="corporativo/style_comun.css">
+</head>
+<body>
+    <div class="header">
+        <img src="corporativo/logo.png" alt="logo">
+        <h1>Farmacia Santa Rita</h1>
+    </div>
+
+    <form hidden>
+        <!-- Este sector está oculto pero es el que envía los mensajes-->
+        <input type="text" id="autor" placeholder="autor">
+        <input type="textarea" id="texto" placeholder="texto">
+        <input type="text" id="destinatario" placeholder="destinatario">
+        <input type="hidden" id="token" value="<%=token%>">      
+        <input type="submit" id="enviarx" value="Enviar">
+    </form>
+
+    <div id="mensajes2"></div>
+    <hr>
+    <div id="mensajes3"></div>
+    
+    <script src='/socket.io/socket.io.min.js'></script>
+    <script src='js/main.js'></script>
+    <script>var url= '<%=url%>'</script>
+    <script src='js/main_central.js'></script>
+    <script>
+        token='<%=token%>'    
+    </script>
+</body>
+</html>

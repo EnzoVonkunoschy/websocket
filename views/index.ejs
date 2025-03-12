@@ -3,66 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
+    <title>Farmacia Santa Rita</title>
+    <link rel="stylesheet" href="corporativo/style_comun.css">
 </head>
 <body>
-    <h1>Mi App Chat Enzo</h1><span id="miId"></span>
+    <div class="header">
+        <img src="corporativo/logo.png" alt="logo">
+        <h1>Farmacia Santa Rita</h1>
+    </div>
 
     <div id="mensajes"></div>
-
+    <br><br>
     <form>
-        <input type="text" id="autor" placeholder="Tu nombre">
+        <input type="text" id="autor" placeholder="Tu nombre" hidden>
         <!-- 
         <input type="text" id="texto" placeholder="Cuéntanos algo...">-->
-        <textarea id="texto" placeholder="Escribe aquí..." rows="4" cols="30"></textarea>
-        <input type="text" id="destinatario" placeholder="destinatario">
-        <input type="submit" value="Enviar">
-    </form>
+        <input type="hidden" id="token" value='<%=token%>'>
+        <textarea id="texto" placeholder="Escribe aquí..." rows="4" cols="30" style="width: 100%;border-radius: 10px;"></textarea>
+        <input type="text" id="destinatario" placeholder="destinatario" hidden><br><br>
+        <input type="submit" value="Enviar" style="width: 90%; background-color: #006400; color: white; border-radius: 10px; display: block; margin: 0 auto;">
 
+    </form>
+    <br>
     <video id="video" width="320" height="240" autoplay></video>
-    <button id="snap">Tomar Foto</button>
     <canvas id="canvas" width="320" height="240"></canvas>
 
+    <br><br>
+    <div    id="camaras"         onclick="camaras()"        >Cámara         </div><br>
+    <button id="snap"            onclick="snap()"           >Tomar Foto     </button><br>
+    <button id="enviar_snap"     onclick="enviar_snap()"    >Enviar Foto    </button><br>
+    <button id="cancelar_snap"   onclick="cancelar_snap()"  >Cancelar Foto  </button><br>
+    <button id="cancelar_camara" onclick="cancelar_camara()">Cancelar Cámara</button><br>
+
     <script>
-        // Acceder a la cámara
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(function(stream) {
-                var video = document.getElementById('video');
-                video.srcObject = stream;
+    
+    // inicializo botones
+    ocultarBotones()
+    document.getElementById('camaras').style.display = "block"
+
+    let idCamaras = []
+    navigator.mediaDevices.enumerateDevices()
+        .then(function(devices) {
+            devices.forEach(function(device) {
+                if (device.kind === 'videoinput') {
+                    idCamaras.push(device.deviceId)
+                }
+            });
+            mostrarCamaras()
+        })
+        .catch(function(err) {
+            console.error(err.name + ": " + err.message);
+        });
+    
+    function mostrarCamaras(){
+        //console.log("idCamaras")
+            //console.log(idCamaras)
+            //console.log(idCamaras.length)
+            let str = ""
+            for(let i=0 ; i<idCamaras.length ; i++){
+                str += `<button onclick="iniciarCamara(${i})">Cámara ${i+1}</button><br>`
+            }
+            document.getElementById('camaras').innerHTML = '<br>'+str;
+    }
+
+  
+
+    var stream;
+    var video;
+
+    function iniciarCamara(idCam){
+        ocultarBotones()
+        document.getElementById('snap'         ).style.display = "block"
+        document.getElementById('cancelar_camara').style.display = "block"
+        document.getElementById('camaras'        ).style.display = "block"
+
+        document.getElementById('video'        ).style.display = "block"
+
+        navigator.mediaDevices.getUserMedia({ video: {deviceId: { exact: idCamaras[idCam] }} })
+            .then(function(stream1) {
+                 video = document.getElementById('video');
+                stream = stream1  // ft 1
+                video.style.display = "block"; // req 27-01
+                video.srcObject = stream1;
                 video.play();
             })
             .catch(function(error) {
                 console.error("Error al acceder a la cámara: ", error);
             });
-    
-        // Capturar la foto
-        document.getElementById('snap').addEventListener('click', function() {
-            var canvas = document.getElementById('canvas');
-            var context = canvas.getContext('2d');
-            var video = document.getElementById('video');
-            context.drawImage(video, 0, 0, 320, 240);
-    
-            // Convertir la imagen a un archivo Blob y enviarla al servidor
-            canvas.toBlob(function(blob) {
-                var formData = new FormData();
-                formData.append('file', blob, autorLocal+'-captura.png');
-                formData.append('autor', autorLocal); 
-    
-                //fetch('http://localhost:8080/captura', {
-                fetch('<%=url%>captura', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Éxito:', data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-            }, 'image/png');
-        });
+
+    }
+
+    function ocultarBotones(){
+        document.getElementById('camaras').style.display = "none"
+        document.getElementById('snap').style.display = "none"
+        document.getElementById('enviar_snap').style.display = "none"
+        document.getElementById('cancelar_snap').style.display = "none"
+        document.getElementById('cancelar_camara').style.display = "none"
+
+        document.getElementById('video').style.display = "none"
+        document.getElementById('canvas').style.display = "none"
+    }
+
+    // Deteniendo la transmisión
+    function detenerTransmision_x() {
+        if (stream) {
+            let tracks = stream.getTracks();
+            tracks.forEach(function(track) {
+            track.stop();
+            });
+            stream = null;
+        }
+        // Selecciona el elemento <video> por su id
+        videoElement = document.getElementById("video");
+
+        // Cambia el estilo display a 'none' para ocultar el elemento
+        videoElement.style.display = "none";
+                canvas.style.display = "none";
+        document.getElementById('snap').style.display = "none";  // req 27-01
+    }
+
+    var canvas;
+
+    function snap(){
+        ocultarBotones()
+             canvas = document.getElementById('canvas');
+        var context = canvas.getContext('2d');
+        var   video = document.getElementById('video');
+        
+        context.drawImage(video, 0, 0, 320, 240);
+        
+        document.getElementById('enviar_snap').style.display = "block"
+        document.getElementById('cancelar_snap').style.display = "block"
+
+        document.getElementById('canvas').style.display = "block"
+    }
+
+    function cancelar_snap(){
+        iniciarCamara()
+    }
+
+    function enviar_snap(){
+        canvas.toBlob(function(blob) {
+            var formData = new FormData();
+            formData.append('file', blob, autorLocal+'-captura.png');
+            formData.append('autor', autorLocal); 
+
+            fetch('<%=url%>captura', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                //console.log('Éxito:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }, 'image/png');
+
+        // Detenemos transmisión
+        if (stream) {
+            let tracks = stream.getTracks();
+            tracks.forEach(function(track) {
+            track.stop();
+            });
+            stream = null;
+        }
+
+        ocultarBotones()
+
+        document.getElementById('camaras').style.display = "block"
+
+    }
+
+    function cancelar_camara(){
+        // Detenemos transmisión
+        if (stream) {
+            let tracks = stream.getTracks();
+            tracks.forEach(function(track) {
+            track.stop();
+            });
+            stream = null;
+        }
+
+        ocultarBotones()
+        document.getElementById('camaras').style.display = "block"
+    }
+
     </script>
     
     <script src='/socket.io/socket.io.min.js'></script>

@@ -1,0 +1,53 @@
+
+.header {
+    display: flex;
+    align-items: center;
+}
+.header img {
+    height: 100%; /* Ajusta la altura de la imagen al contenedor */
+}
+.header h1 {
+    margin: 0;
+    padding-left: 10px; /* Espacio entre la imagen y el texto */
+}
+* {
+    font-size: 1.1em;
+}
+.container {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los ítems pasen a la siguiente línea si no caben */
+    justify-content: center; /* Centra los ítems horizontalmente */
+    align-items: center; /* Centra los ítems verticalmente */
+}
+
+.item {
+    flex: 1; /* Los ítems crecerán de manera uniforme para llenar el espacio disponible */
+    min-width: 200px; /* Asegura que los ítems tengan un ancho mínimo */
+    margin: 10px; /* Espaciado entre ítems */
+}
+
+@media (max-width: 600px) {
+    .container {
+        flex-direction: column; /* Cambia la dirección de los ítems a columna en pantallas pequeñas */
+    }
+}
+
+button, input[type='submit'] {
+    width: 90%; 
+    background-color: #006400; 
+    color: white; 
+    border-radius: 10px; 
+    display: block; 
+    margin: 0 auto;
+}
+
+video, canvas {
+    width: 90%; 
+    
+    display: block; 
+    margin: 0 auto;            
+}
+
+#camaras {
+    background-color: lightgreen;
+}

@@ -1,8 +1,15 @@
 StateDiagram{
-    state eliminarRepetidos
-    state procesarMensajes
-    state getDestinatario
-    state misMensajes
+    state iniciarCamara
+    state detenerTransmision
+    state Start 
+    state Snap
+    state captura
 
+    Snap -> captura 'click'
+    Snap -> detenerTransmision 'click'
+
+    state butt_Camara
+
+    butt_Camara -> iniciarCamara
     
 }

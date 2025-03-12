@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmacia Santa Rita</title>
+    <link rel="stylesheet" href="corporativo/style_comun.css">
+</head>
+<body>
+    <div class="header">
+        <img src="corporativo/logo.png" alt="logo">
+        <h1>Farmacia Santa Rita</h1>
+    </div>
+
+    <form action='<%=url%>central' method="POST">
+        <p><label>Usuario:&nbsp;</label><input type="text" name="user"> </p>
+        <p><label>Contraseña:&nbsp;</label><input type="pass" name="pass"> </p>
+        <input type="submit" value="Enviar">
+    </form>
+
+</body>
+</html>

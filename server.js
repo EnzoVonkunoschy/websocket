@@ -102,6 +102,20 @@ app.post('/captura',upload.single('file'),(req, res)=>{
     io.sockets.emit('mensajes',mensajes)
 })
 
+app.post('/archivo',upload.single('archivo'),(req, res)=>{
+    console.log("Llegó una archivo: "+JSON.stringify(req.file))
+    //res.send('Respuesta desde captura')
+    //const mensaje = {autor: req.body.autor, destinatario: 'Farmacia', texto: 'Captura', imagen: req.file.filename}
+    //const mensaje = {autor: req.body.autor, destinatario: 'Farmacia', texto: '<button>Ok</button>', imagen: req.file.filename}
+    //const mensaje = {autor: req.body.autor, destinatario: 'Farmacia', texto: "<a href='http://localhost:8080/images/1729675790868-73974847658526990-captura.png' target='new'>Captura</a>"}
+    const mensaje = {autor: req.body.autor, destinatario: 'Farmacia', texto: "<a href='"+_url+"images/"+req.file.filename+"' target='new'>Archivo</a>",imagen: req.file.filename}
+    
+    
+    mensajes.push(mensaje)
+    
+    io.sockets.emit('mensajes',mensajes)
+})
+
 
 /* */
 app.get('/x',(req,res)=>{

@@ -34,6 +34,55 @@
     <button id="enviar_snap"     onclick="enviar_snap()"    >Enviar Foto    </button><br>
     <button id="cancelar_snap"   onclick="cancelar_snap()"  >Cancelar Foto  </button><br>
     <button id="cancelar_camara" onclick="cancelar_camara()">Cancelar Cámara</button><br>
+    <!--button id="archivo"         onclick="archivo()"        >Archivo        </button><br-->
+
+    <!-- HTML -->
+    <input type="file" id="archivoInput" name="archivo">
+    <br>
+    <button id="enviar">Enviar</button>
+
+    <script>
+        // JavaScript
+        document.getElementById('enviar').addEventListener('click', function(event) {
+            event.preventDefault(); // Evitar el envío del formulario predeterminado
+
+            var archivoInput = document.getElementById('archivoInput');
+            var archivo = archivoInput.files[0]; // Obtener el primer archivo seleccionado
+
+            if (archivo) {
+                var formData = new FormData();
+                formData.append('archivo', archivo); // Agregar el archivo al FormData
+                formData.append('autor', autorLocal); // 2025-02-19
+
+                fetch('<%=url%>archivo', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json()) // Asumiendo que el servidor responde con JSON
+                .then(data => {
+                    console.log('Éxito:', data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+                } else {
+                    console.log('No se ha seleccionado ningún archivo.');
+            }
+        });
+    </script>
+
+    <style>
+        #archivoInput {
+            background-color: green; /* Fondo verde */
+            color: white; /* Texto en blanco */
+            border-radius: 5px; /* Bordes redondeados */
+            width: 90%; /* Ocupa el 90% del ancho */
+            display: block; /* Asegura que el elemento se comporte como un bloque */
+            margin: 0 auto; /* Centrar el elemento horizontalmente */
+            padding: 10px; /* Agrega un poco de relleno para mayor comodidad */
+        }
+    </style>
+
 
     <script>
     
@@ -125,27 +174,27 @@
 
     var canvas;
 
-    function snap(){
-    ocultarBotones();
-    canvas = document.getElementById('canvas');
-    var context = canvas.getContext('2d');
-    var video = document.getElementById('video');
-    
-    // Obtener las dimensiones del vídeo
-    var videoWidth = video.videoWidth;
-    var videoHeight = video.videoHeight;
-    
-    // Ajustar las dimensiones del canvas
-    canvas.width = videoWidth;
-    canvas.height = videoHeight;
-    
-    // Dibujar la imagen en el canvas manteniendo la relación de aspecto
-    context.drawImage(video, 0, 0, videoWidth, videoHeight);
-    
-    document.getElementById('enviar_snap').style.display = "block";
-    document.getElementById('cancelar_snap').style.display = "block";
-    document.getElementById('canvas').style.display = "block";
-}
+    function snap(){        
+        ocultarBotones();
+        canvas = document.getElementById('canvas');
+        var context = canvas.getContext('2d');
+        var video = document.getElementById('video');
+        
+        // Obtener las dimensiones del vídeo
+        var videoWidth = video.videoWidth;
+        var videoHeight = video.videoHeight;
+        
+        // Ajustar las dimensiones del canvas
+        canvas.width = videoWidth;
+        canvas.height = videoHeight;
+        
+        // Dibujar la imagen en el canvas manteniendo la relación de aspecto
+        context.drawImage(video, 0, 0, videoWidth, videoHeight);
+        
+        document.getElementById('enviar_snap').style.display = "block";
+        document.getElementById('cancelar_snap').style.display = "block";
+        document.getElementById('canvas').style.display = "block";
+    }
 
 
     function cancelar_snap(){
